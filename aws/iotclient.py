@@ -1,4 +1,5 @@
 from AWSIoTPythonSDK.MQTTLib import AWSIoTMQTTClient
+import json
 
 class MQTTClient:
 
@@ -15,3 +16,10 @@ class MQTTClient:
     def subscribe(self, topic, callback):
         self._client.connect()
         self._client.subscribe(topic, 1, callback)
+
+    def publish(self, topic, message):
+        self._client.connect()
+        message_d = {}
+        message_d['message'] = message
+        self._client.publish(topic, json.dumps(message_d), 1)
+        self._client.disconnect()

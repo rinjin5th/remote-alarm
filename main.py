@@ -1,6 +1,7 @@
 import alarm
 import argparse
 import os
+import switch
 from aws import iotclient
 from os import path
 
@@ -23,9 +24,14 @@ if args.mode not in ALLOWED_MODES:
     parser.error("Unknown --mode option %s. Must be one of %s" % (args.mode, str(ALLOWED_MODES)))
     exit(2)
 
-mqtt_client = iotclient.MQTTClient("alarm", host, rootCAPath, certificatePath, privateKeyPath)
+clientId = "client_" + args.mode
+
+mqtt_client = iotclient.MQTTClient(clientId, host, rootCAPath, certificatePath, privateKeyPath)
 
 if args.mode == "alarm":
     alarm_obj = alarm.Alarm()
     mqtt_client.subscribe("remote/alarm", alarm_obj.stop)
     alarm_obj.play(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'alarm.wav'))
+elif args.mode == "switch":
+    switch.watch()
+    mqtt_client.publish("remote/alarm", "stop")
