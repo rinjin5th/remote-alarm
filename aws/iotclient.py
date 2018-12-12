@@ -17,6 +17,10 @@ class MQTTClient:
         self._client.connect()
         self._client.subscribe(topic, 1, callback)
 
+    def unsubscribe(self, topic):
+        self._client.unsubscribe(topic)
+        self._client.disconnect() 
+
     def publish(self, topic, message):
         self._client.connect()
         message_d = {}

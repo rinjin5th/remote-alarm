@@ -32,6 +32,7 @@ if args.mode == "alarm":
     alarm_obj = alarm.Alarm()
     mqtt_client.subscribe("remote/alarm", alarm_obj.stop)
     alarm_obj.play(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'alarm.wav'))
+    mqtt_client.unsubscribe("remote/alarm")
 elif args.mode == "switch":
     switch.watch()
     mqtt_client.publish("remote/alarm", "stop")
